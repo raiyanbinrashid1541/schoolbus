@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /
+
+# Redirect index.html to root
+RewriteRule ^index\.html$ / [R=301,L]
+
+# Remove .html extension from URLs
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^/]+)$ $1.html [L]
