@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সেটিংস - স্কুল বাস ম্যানেজমেন্ট</title>
+    <style>
+        @font-face {
+            font-family: 'Noto Serif Bengali';
+            src: local('Noto Serif Bengali'), 
+                 local('NotoSerifBengali'),
+                 url('fonts/NotoSerifBengali-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Noto Serif Bengali';
+            src: local('Noto Serif Bengali Bold'), 
+                 local('NotoSerifBengali-Bold'),
+                 url('fonts/NotoSerifBengali-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --sidebar-width: 250px;
+            --boys-color: #3498db;
+            --girls-color: #e84393;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif Bengali', serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .app-logo {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-item.active {
+            background-color: #f0f7ff;
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* Settings Card Styles */
+        .settings-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Tag Input Styles */
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 50px;
+            align-items: center;
+        }
+
+        .tags-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 8px;
+            font-size: 1rem;
+            min-width: 100px;
+        }
+
+        .tag {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Font Preview */
+        .font-preview {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+
+        /* Logo Upload */
+        .logo-upload-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .logo-section {
+            flex: 1;
+        }
+
+        .logo-preview {
+            width: 100%;
+            height: 150px;
+            border: 1px dashed #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .logo-history {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .logo-history-item {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-history-item:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .logo-history-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background-color: #f8f9fa;
+        }
+
+        .drop-zone.active {
+            border-color: var(--primary);
+            background-color: #f0f7ff;
+        }
+
+        .drop-zone p {
+            margin-bottom: 15px;
+        }
+
+        /* Bus List Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            background-color: #f5f7fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #eee;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .boys-bus {
+            color: var(--boys-color);
+            font-weight: bold;
+        }
+
+        .girls-bus {
+            color: var(--girls-color);
+            font-weight: bold;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .logo-upload-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Arrow Button (moved to right side) -->
+    <button onclick="window.location.href='index.html'" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 200;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: background 0.2s;
+    " title="পেছনে যান">&#8592;</button>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <img src="bcpsc.png" alt="School Logo" class="app-logo">
+            <div class="sidebar-title">সেটিংস মেনু</div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item active" data-target="route-management">
+                <img src="bcpsc.png" class="logo-icon"> রাস্তা সংক্রান্ত
+            </li>
+            <li class="nav-item" data-target="bus-management">
+                <i>🚌</i> বাস সংক্রান্ত
+            </li>
+            <li class="nav-item" data-target="font-settings">
+                <i>🔤</i> ফন্ট পরিবর্তন
+            </li>
+            <li class="nav-item" data-target="logo-settings">
+                <i>🖼️</i> লোগো পরিবর্তন
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="content-title">সিস্টেম সেটিংস</h1>
+        </div>
+
+        <!-- Route Management Section -->
+        <div class="settings-card" id="route-management">
+            <h2 class="card-title"><i>🛣️</i> রাস্তা ব্যবস্থাপনা</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="route-name">রাস্তার নাম</label>
+                    <input type="text" id="route-name" class="form-control" placeholder="যেমন: রুট ১">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="route-stands">স্ট্যান্ডসমূহ (কমা বা স্পেস দিয়ে পৃথক করুন)</label>
+                <div class="tags-input" id="stands-container">
+                    <input type="text" id="route-stands-input" placeholder="স্ট্যান্ডের নাম লিখুন">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary">রুট যুক্ত করুন</button>
+            
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">সকল রুটের তালিকা</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>রুট নাম</th>
+                        <th>স্ট্যান্ডসমূহ</th>
+                        <th>এডিট</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>রুট ১</td>
+                        <td>ফুলতলা, খেজুরতলা, বাজার</td>
+                        <td><button class="action-btn">🗑️</button></td>
+                    </tr>
+                    <tr>
+                        <td>রুট ২</td>
+                        <td>মসজিদ, স্কুল চত্বর</td>
+                        <td><button class="action-btn">🗑️</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bus Management Section -->
+        <div class="settings-card" id="bus-management" style="display: none;">
+            <h2 class="card-title"><i>🚌</i> বাস ব্যবস্থাপনা</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bus-number">বাস নং</label>
+                    <input type="text" id="bus-number" class="form-control" placeholder="যেমন: ০১">
+                </div>
+                
+
+                
+                <div class="form-group">
+                    <label for="bus-capacity">ধারণক্ষমতা</label>
+                    <input type="number" id="bus-capacity" class="form-control" placeholder="যেমন: ৪০">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary">বাস যোগ করুন</button>
+            
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">সকল বাসের তালিকা</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>বাস নং</th>
+                        <th>ধারণক্ষমতা</th>
+                        <th>এডিট</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>০১</td>
+                        <td>৪০ জন</td>
+                        <td><button class="action-btn">🗑️</button></td>
+                    </tr>
+                    <tr>
+                        <td>০২</td>
+                        <td>৪৫ জন</td>
+                        <td><button class="action-btn">🗑️</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Font Settings Section -->
+        <div class="settings-card" id="font-settings" style="display: none;">
+            <h2 class="card-title"><i>🔤</i> ফন্ট পরিবর্তন</h2>
+            
+            <div class="form-group">
+                <label for="font-select">বর্তমান ফন্ট</label>
+                <select id="font-select" class="form-control">
+                    <option value="Noto Serif Bengali">Noto Serif Bengali</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                </select>
+            </div>
+            
+            <div class="drop-zone" id="font-drop-zone">
+                <p>নতুন ফন্ট ফাইল এখানে ড্রপ করুন (.ttf)</p>
+                <p>অথবা ক্লিক করে নির্বাচন করুন</p>
+                <input type="file" id="font-upload" accept=".ttf" style="display: none;">
+            </div>
+            
+            <div class="font-preview">
+                <h3>ফন্ট প্রিভিউ</h3>
+                <p>এই টেক্সটটি নির্বাচিত ফন্টে প্রদর্শিত হবে। স্কুল বাস ব্যবস্থাপনা সফটওয়্যারটি ব্যবহার করে আপনি সহজেই বাস রুট ম্যানেজ করতে পারবেন।</p>
+                <p>ছাত্র বাস এবং ছাত্রী বাস আলাদাভাবে ব্যবস্থাপনা করা যাবে।</p>
+            </div>
+            
+            <button class="btn btn-primary">ফন্ট সংরক্ষণ করুন</button>
+        </div>
+
+        <!-- Logo Settings Section -->
+        <div class="settings-card" id="logo-settings" style="display: none;">
+            <h2 class="card-title"><i>🖼️</i> লোগো পরিবর্তন</h2>
+            
+            <div class="logo-upload-container">
+                <div class="logo-section">
+                    <h3>বর্তমান লোগো</h3>
+                    <div class="logo-preview">
+                        <img src="bcpsc.png" alt="Current Logo" id="current-logo">
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">লোগো ইতিহাস</h3>
+                    <div class="logo-history">
+                        <div class="logo-history-item">
+                            <img src="bcpsc.png" alt="Logo 1">
+                        </div>
+                        <div class="logo-history-item">
+                            <img src="bcpsc-old1.png" alt="Logo 2">
+                        </div>
+                        <div class="logo-history-item">
+                            <img src="bcpsc-old2.png" alt="Logo 3">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="logo-section">
+                    <h3>নতুন লোগো আপলোড করুন</h3>
+                    <div class="drop-zone" id="logo-drop-zone">
+                        <p>লোগো ফাইল এখানে ড্রপ করুন</p>
+                        <p>অথবা ক্লিক করে নির্বাচন করুন</p>
+                        <input type="file" id="logo-upload" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="logo-name">লোগোর নাম</label>
+                        <input type="text" id="logo-name" class="form-control" placeholder="যেমন: স্কুল লোগো ২০২৪">
+                    </div>
+                    
+                    <button class="btn btn-primary">লোগো সংরক্ষণ করুন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            const settingsCards = document.querySelectorAll('.settings-card');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all settings cards
+                    settingsCards.forEach(card => card.style.display = 'none');
+                    
+                    // Show corresponding card
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).style.display = 'block';
+                });
+            });
+
+            // Tag input functionality for stands
+            const standsInput = document.getElementById('route-stands-input');
+            const standsContainer = document.getElementById('stands-container');
+            
+            standsInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
+                    e.preventDefault();
+                    const value = this.value.trim();
+                    if (value) {
+                        addTag(value);
+                        this.value = '';
+                    }
+                }
+            });
+            
+            function addTag(value) {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `
+                    ${value}
+                    <span class="tag-remove">×</span>
+                `;
+                standsContainer.insertBefore(tag, standsInput);
+                
+                tag.querySelector('.tag-remove').addEventListener('click', function() {
+                    tag.remove();
+                });
+            }
+
+            // Drag and drop for font upload
+            const fontDropZone = document.getElementById('font-drop-zone');
+            const fontUpload = document.getElementById('font-upload');
+            
+            fontDropZone.addEventListener('click', function() {
+                fontUpload.click();
+            });
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fontDropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fontDropZone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                fontDropZone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                fontDropZone.classList.add('active');
+            }
+            
+            function unhighlight() {
+                fontDropZone.classList.remove('active');
+            }
+            
+            fontDropZone.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFontFiles(files);
+            });
+            
+            fontUpload.addEventListener('change', function() {
+                handleFontFiles(this.files);
+            });
+            
+            function handleFontFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.name.endsWith('.ttf')) {
+                        fontDropZone.innerHTML = `<p>${file.name}</p>`;
+                        // Here you would typically process the font file
+                    } else {
+                        alert('শুধুমাত্র .ttf ফাইল সমর্থিত');
+                    }
+                }
+            }
+
+            // Logo upload functionality
+            const logoDropZone = document.getElementById('logo-drop-zone');
+            const logoUpload = document.getElementById('logo-upload');
+            const currentLogo = document.getElementById('current-logo');
+            
+            logoDropZone.addEventListener('click', function() {
+                logoUpload.click();
+            });
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                logoDropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                logoDropZone.addEventListener(eventName, function() {
+                    logoDropZone.classList.add('active');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                logoDropZone.addEventListener(eventName, function() {
+                    logoDropZone.classList.remove('active');
+                }, false);
+            });
+            
+            logoDropZone.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleLogoFiles(files);
+            });
+            
+            logoUpload.addEventListener('change', function() {
+                handleLogoFiles(this.files);
+            });
+            
+            function handleLogoFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.match('image.*')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            currentLogo.src = e.target.result;
+                            // Add to history (in a real app, you'd save this)
+                            const historyContainer = document.querySelector('.logo-history');
+                            const historyItem = document.createElement('div');
+                            historyItem.className = 'logo-history-item';
+                            historyItem.innerHTML = `<img src="${e.target.result}" alt="Uploaded Logo">`;
+                            historyContainer.prepend(historyItem);
+                            
+                            historyItem.addEventListener('click', function() {
+                                currentLogo.src = e.target.result;
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('শুধুমাত্র ইমেজ ফাইল সমর্থিত');
+                    }
+                }
+            }
+
+            // Delete buttons functionality
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?')) {
+                        const row = this.closest('tr');
+                        row.style.transition = 'all 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                        }, 300);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
